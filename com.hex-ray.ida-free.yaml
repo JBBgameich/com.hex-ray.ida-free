@@ -1,0 +1,32 @@
+id: com.hexray.ida-free
+runtime: org.freedesktop.Platform
+runtime-version: "22.08"
+sdk: org.freedesktop.Sdk
+command: ida64
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --device=dri
+  - --filesystem=home
+modules:
+  - name: ida-free
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra -t /app/bin
+      - install -D ida64 -t /app/bin
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - chmod +x installer.run
+          - ./installer.run --mode unattended --prefix . --installpassword ""
+      - type: extra-data
+        filename: installer.run
+        only-arches: [x86_64]
+        url: https://out7.hex-rays.com/files/idafree83_linux.run
+        sha256: ab93d91432f2d4f01622be64ee5cebbc9e5c6bfc92f573a402d9469d2de00a82
+        size: 94842973
+      - type: script
+        dest-filename: ida64
+        commands:
+          - /app/extra/ida64
